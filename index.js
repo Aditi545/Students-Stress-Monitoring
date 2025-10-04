@@ -4,6 +4,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const stressRoutes = require('./routes/stressRoutes');
 const analysisRoutes = require('./routes/analysisRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 
 const app = express();
 const mongoose = require('mongoose');
@@ -33,8 +34,10 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/stress', stressRoutes);
 app.use('/api/analysis', analysisRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 console.log('✅ Analysis routes registered');
+console.log('✅ Feedback routes registered');
 
 
 app.get('/', (req, res) => {

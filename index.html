@@ -1,624 +1,787 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PeacePulse — Stress Analysis & Prediction</title>
-
-  <!-- Fonts & Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
-
-  <style>
-    :root {
-      --bg: #0f1724;
-      --card: #0b1220;
-      --muted: #9aa5b1;
-      --accent: #6dd3c1;
-      --accent-2: #7c5cff;
-      --radius: 14px;
-    }
-
-    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-    body {
-      margin: 0;
-      background: linear-gradient(180deg, #071026 0%, var(--bg) 60%);
-      color: #e6eef6;
-      overflow-x: hidden;
-    }
-
-    /* Sticky Navbar */
-    nav {
-      position: fixed;
-      top: 0; left: 0; width: 100%;
-      background: #0d1117;
-      display: flex;
-      justify-content: center;
-      padding: 10px 0;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-      z-index: 900;
-    }
-
-    nav form {
-      display: flex;
-      gap: 10px;
-      width: 50%;
-      justify-content: center;
-    }
-
-    nav input {
-      flex: 1;
-      background: #1a1f2e;
-      border: none;
-      border-radius: 10px;
-      color: white;
-      padding: 10px 12px;
-    }
-
-    nav button {
-      background: linear-gradient(to right, #4facfe, #00f2fe);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-weight: 600;
-      padding: 10px 16px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    nav button:hover { opacity: 0.9; }
-
-    /* Sidebar */
-    .main_box {
-      display: flex;
-    }
-
-    .btn_one label {
-      position: fixed;
-      top: 20px;
-      left: 25px;
-      font-size: 24px;
-      color: white;
-      cursor: pointer;
-      z-index: 1100;
-    }
-
-    #check { display: none; }
-
-    .sidebar_menu {
-      position: fixed;
-      top: 0; left: -280px;
-      width: 250px; height: 100%;
-      background: #0b1220;
-      padding: 20px;
-      transition: all 0.4s ease;
-      box-shadow: 3px 0 10px rgba(0,0,0,0.5);
-      z-index: 1100;
-    }
-
-    #check:checked ~ .sidebar_menu {
-      left: 0;
-    }
-
-    .sidebar_menu .logo a {
-      color: var(--accent);
-      font-size: 22px;
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .btn_two label {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 22px;
-      color: white;
-      cursor: pointer;
-    }
-
-    .menu ul {
-      list-style: none;
-      padding: 0;
-      margin-top: 50px;
-    }
-
-    .menu ul li {
-      padding: 10px 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .menu ul li a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 15px;
-      transition: 0.2s;
-    }
-
-    .menu ul li a:hover {
-      color: var(--accent);
-    }
-
-    .social_media {
-      position: absolute;
-      bottom: 30px;
-      left: 20px;
-      display: flex;
-      gap: 15px;
-    }
-
-    .social_media a {
-      color: var(--muted);
-      font-size: 18px;
-      transition: 0.3s;
-    }
-
-    .social_media a:hover { color: var(--accent); }
-
-    /* Main Content */
-    main {
-      margin-top: 100px;
-      padding: 30px;
-      text-align: center;
-    }
-
-    h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
-    }
-
-    .muted { color: var(--muted); }
-
-    footer {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 50px;
-    }
-
-    /* Auth Section Styles */
-    .auth-section {
-      max-width: 400px;
-      margin: 20px auto;
-      padding: 20px;
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-
-    .auth-form h3 {
-      color: var(--accent);
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-    .auth-form input {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      background: #1a1f2e;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: white;
-      font-size: 14px;
-    }
-
-    .auth-form button {
-      width: 100%;
-      background: linear-gradient(to right, #4facfe, #00f2fe);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      margin: 10px 0;
-    }
-
-    .auth-form a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    /* Dashboard Styles */
-    .stress-form, .recent-entries, .analysis-section {
-      background: var(--card);
-      margin: 20px auto;
-      padding: 20px;
-      border-radius: var(--radius);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      max-width: 600px;
-    }
-
-    .form-group {
-      margin: 15px 0;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: var(--accent);
-      font-weight: 500;
-    }
-
-    .form-group input[type="range"] {
-      width: 100%;
-      margin: 10px 0;
-    }
-
-    .form-group textarea {
-      width: 100%;
-      padding: 10px;
-      background: #1a1f2e;
-      border: 1px solid #333;
-      border-radius: 8px;
-      color: white;
-      resize: vertical;
-    }
-
-    .stress-form button, .recent-entries button, .analysis-section button {
-      background: linear-gradient(to right, #7c5cff, #6dd3c1);
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      margin: 10px 5px;
-    }
-
-    .logout-btn {
-      background: linear-gradient(to right, #ff6b6b, #ee5a52) !important;
-    }
-
-    #entries-list, #analysis-results {
-      margin-top: 15px;
-      padding: 15px;
-      background: #1a1f2e;
-      border-radius: 8px;
-      min-height: 50px;
-    }
-
-    .entry-item {
-      background: #0b1220;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border-left: 3px solid var(--accent);
-    }
-
-    .analysis-item {
-      background: #0b1220;
-      padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
-      border: 1px solid var(--accent);
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- Sidebar Toggle Checkbox -->
-  <div class="main_box">
-    <input type="checkbox" id="check" />
-    <div class="btn_one">
-      <label for="check"><i class="fa-solid fa-bars"></i></label>
-    </div>
-
-    <div class="sidebar_menu">
-      <div class="logo">
-        <a href="#">PeacePulse</a>
-      </div>
-
-      <div class="btn_two">
-        <label for="check"><i class="fa-solid fa-xmark"></i></label>
-      </div>
-
-      <div class="menu">
-        <ul>
-          <li><i class="fa-solid fa-house"></i><a href="#">Home</a></li>
-          <li><i class="fa-solid fa-book"></i><a href="#">Journals</a></li>
-          <li><i class="fa-solid fa-gear"></i><a href="#">Settings</a></li>
-          <li><i class="fa-solid fa-users"></i><a href="#">Community</a></li>
-          <li><i class="fa-solid fa-user-plus"></i><a href="#">Signup</a></li>
-          <li><i class="fa-solid fa-phone"></i><a href="#">Contact</a></li>
-          <li><i class="fa-regular fa-comments"></i><a href="#">Feedback</a></li>
-          <li><i class="fa-solid fa-right-to-bracket"></i><a href="#">Login</a></li>
-        </ul>
-      </div>
-
-      <div class="social_media">
-        <a href="#"><i class="fa-brands fa-facebook"></i></a>
-        <a href="#"><i class="fa-brands fa-twitter"></i></a>
-        <a href="#"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#"><i class="fa-brands fa-youtube"></i></a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Sticky Search Navbar -->
-  <nav>
-    <form role="search">
-      <input type="search" placeholder="Search here..." aria-label="Search" />
-      <button type="submit">Search</button>
-    </form>
-  </nav>
-
-  <!-- Main Content -->
-  <main>
-    <h1>Hello, Juhi — Welcome to PeacePulse</h1>
-    <p class="muted">Your AI-powered stress tracking & prediction dashboard</p>
-    
-    <!-- Login/Register Section -->
-    <div id="auth-section" class="auth-section">
-      <div class="auth-form">
-        <h3>Login to Your Account</h3>
-        <input type="email" id="login-email" placeholder="Email" value="test@example.com">
-        <input type="password" id="login-password" placeholder="Password" value="password123">
-        <button onclick="loginUser()">Login</button>
-        <p>Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
-      </div>
-      
-      <div class="auth-form" id="register-form" style="display: none;">
-        <h3>Create New Account</h3>
-        <input type="text" id="reg-username" placeholder="Username" value="testuser">
-        <input type="email" id="reg-email" placeholder="Email" value="test@example.com">
-        <input type="password" id="reg-password" placeholder="Password" value="password123">
-        <button onclick="registerUser()">Register</button>
-        <p>Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
-      </div>
-    </div>
-
-    <!-- Dashboard Section (Hidden until login) -->
-    <div id="dashboard" style="display: none;">
-      <!-- Stress Entry Form -->
-      <div class="stress-form">
-        <h3>📊 Log Your Stress Level</h3>
-        <div class="form-group">
-          <label>Stress Level (0-10):</label>
-          <input type="range" id="stress-level" min="0" max="10" value="5" oninput="updateStressValue()">
-          <span id="stress-value">5</span>
-        </div>
-        <div class="form-group">
-          <label>Symptoms (comma separated):</label>
-          <input type="text" id="symptoms" placeholder="headache, fatigue, anxiety" value="headache, fatigue">
-        </div>
-        <div class="form-group">
-          <label>Notes:</label>
-          <textarea id="notes" placeholder="How are you feeling today?" rows="3">Feeling overwhelmed with work</textarea>
-        </div>
-        <button onclick="submitStressEntry()">📝 Log Stress Entry</button>
-      </div>
-
-      <!-- Recent Entries -->
-      <div class="recent-entries">
-        <h3>📈 Your Recent Entries</h3>
-        <button onclick="loadStressEntries()">🔄 Refresh Data</button>
-        <div id="entries-list"></div>
-      </div>
-
-      <!-- Analysis -->
-      <div class="analysis-section">
-        <h3>🧠 AI Analysis</h3>
-        <button onclick="getAnalysis()">🔍 Get Insights</button>
-        <div id="analysis-results"></div>
-      </div>
-
-      <!-- Logout -->
-      <div class="logout-section">
-        <button onclick="logout()" class="logout-btn">🚪 Logout</button>
-      </div>
-    </div>
-
-    <footer>Connected to your backend API! Real-time stress monitoring.</footer>
-  </main>
-
-  <script>
-    const API_BASE = 'http://localhost:5000';
-    let authToken = '';
-
-    // API Helper Functions
-    async function makeRequest(url, options = {}) {
-      try {
-        console.log('Making request to:', url, options);
-        const response = await fetch(url, {
-          headers: {
-            ...options.headers
-          },
-          ...options
-        });
-        
-        let data;
-        const responseText = await response.text();
-        
-        try {
-          data = JSON.parse(responseText);
-        } catch (jsonError) {
-          data = { error: 'Invalid JSON response', raw: responseText };
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PeacePulse - Stress Monitoring Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        console.log('Response:', response.status, data);
-        return { success: response.ok, data, status: response.status };
-      } catch (error) {
-        console.error('Request failed:', error);
-        return { success: false, data: { error: error.message }, status: 0 };
-      }
-    }
 
-    // Auth Functions
-    async function loginUser() {
-      const email = document.getElementById('login-email').value;
-      const password = document.getElementById('login-password').value;
-      
-      const result = await makeRequest(`${API_BASE}/api/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-      
-      if (result.success && result.data.token) {
-        authToken = result.data.token;
-        showDashboard();
-        alert('✅ Login successful!');
-      } else {
-        alert('❌ Login failed: ' + (result.data.message || 'Unknown error'));
-      }
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #111827;
+            height: 100vh;
+            color: #f9fafb;
+            overflow: hidden;
+        }
 
-    async function registerUser() {
-      const username = document.getElementById('reg-username').value;
-      const email = document.getElementById('reg-email').value;
-      const password = document.getElementById('reg-password').value;
-      
-      if (!username || !email || !password) {
-        alert('❌ Please fill in all fields');
-        return;
-      }
-      
-      const result = await makeRequest(`${API_BASE}/api/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password })
-      });
-      
-      if (result.success) {
-        alert('✅ Registration successful! Please login.');
-        showLogin();
-      } else {
-        const errorMsg = result.data?.message || result.data?.error || 'Unknown error';
-        console.error('Registration error:', result);
-        alert('❌ Registration failed: ' + errorMsg);
-      }
-    }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: #1f2937;
+            transition: left 0.3s ease-in-out;
+            z-index: 1000;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
 
-    function showRegister() {
-      document.querySelector('.auth-form').style.display = 'none';
-      document.getElementById('register-form').style.display = 'block';
-    }
+        .sidebar.active {
+            left: 0;
+        }
 
-    function showLogin() {
-      document.querySelector('.auth-form').style.display = 'block';
-      document.getElementById('register-form').style.display = 'none';
-    }
+        .sidebar-header {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid #374151;
+        }
 
-    function showDashboard() {
-      document.getElementById('auth-section').style.display = 'none';
-      document.getElementById('dashboard').style.display = 'block';
-      loadStressEntries(); // Load existing data
-    }
+        .sidebar-header h2 {
+            font-size: 1.8rem;
+            color: #f9fafb;
+            font-weight: 700;
+        }
 
-    function logout() {
-      authToken = '';
-      document.getElementById('auth-section').style.display = 'block';
-      document.getElementById('dashboard').style.display = 'none';
-      document.getElementById('entries-list').innerHTML = '';
-      document.getElementById('analysis-results').innerHTML = '';
-    }
+        .sidebar-nav {
+            padding: 20px 0;
+            flex-grow: 1;
+        }
 
-    // Stress Entry Functions
-    function updateStressValue() {
-      const slider = document.getElementById('stress-level');
-      const value = document.getElementById('stress-value');
-      value.textContent = slider.value;
-    }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: #d1d5db;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            font-size: 1rem;
+            border-left: 4px solid transparent;
+        }
 
-    async function submitStressEntry() {
-      if (!authToken) {
-        alert('❌ Please login first!');
-        return;
-      }
+        .nav-item:hover {
+            background: #374151;
+            color: #ffffff;
+            border-left-color: #4f46e5;
+        }
 
-      const stressLevel = parseInt(document.getElementById('stress-level').value);
-      const symptoms = document.getElementById('symptoms').value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-      const notes = document.getElementById('notes').value;
+        .nav-item.active {
+            background: #4f46e5;
+            color: #ffffff;
+            font-weight: 600;
+            border-left-color: #a5b4fc;
+        }
 
-      console.log('Submitting stress entry:', { stressLevel, symptoms, notes });
+        .sidebar-footer {
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #374151;
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
 
-      const result = await makeRequest(`${API_BASE}/api/stress`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${authToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ stressLevel, symptoms, notes })
-      });
+        .main-content {
+            margin-left: 0;
+            transition: margin-left 0.3s ease-in-out;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+       
+        .content-wrap {
+            flex: 1;
+            overflow-y: auto;
+        }
 
-      if (result.success) {
-        alert('✅ Stress entry logged successfully!');
-        loadStressEntries(); // Refresh the list
-        // Clear form
-        document.getElementById('stress-level').value = 5;
-        document.getElementById('stress-value').textContent = '5';
-        document.getElementById('symptoms').value = '';
-        document.getElementById('notes').value = '';
-      } else {
-        alert('❌ Failed to log entry: ' + (result.data.message || 'Unknown error'));
-      }
-    }
+        .main-content.sidebar-open {
+            margin-left: 280px;
+        }
 
-    async function loadStressEntries() {
-      if (!authToken) {
-        document.getElementById('entries-list').innerHTML = '<p>Please login to view entries.</p>';
-        return;
-      }
+        .header {
+            background: #1f2937;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
 
-      const result = await makeRequest(`${API_BASE}/api/stress`, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
-      });
+        .menu-btn {
+            background: #374151;
+            border: none;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: all 0.2s ease;
+            margin-right: 20px;
+        }
 
-      const entriesList = document.getElementById('entries-list');
-      
-      if (result.success && result.data.length > 0) {
-        entriesList.innerHTML = result.data.map(entry => `
-          <div class="entry-item">
-            <strong>Stress Level: ${entry.stressLevel}/10</strong><br>
-            <small>Date: ${new Date(entry.createdAt).toLocaleDateString()}</small><br>
-            <small>Symptoms: ${entry.symptoms.join(', ')}</small><br>
-            <small>Notes: ${entry.notes || 'No notes'}</small>
-          </div>
-        `).join('');
-      } else {
-        entriesList.innerHTML = '<p>No stress entries found. Log your first entry above!</p>';
-      }
-    }
+        .menu-btn:hover {
+            background: #4f46e5;
+        }
+       
+        .search-container {
+            flex-grow: 1;
+            max-width: 500px;
+            position: relative;
+        }
 
-    async function getAnalysis() {
-      if (!authToken) {
-        alert('❌ Please login first!');
-        return;
-      }
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: #9ca3af;
+        }
 
-      const result = await makeRequest(`${API_BASE}/api/analysis`, {
-        headers: { 'Authorization': `Bearer ${authToken}` }
-      });
+        .search-input {
+            width: 100%;
+            padding: 10px 15px 10px 45px;
+            background: #374151;
+            border: 1px solid #4b5563;
+            border-radius: 8px;
+            color: #f9fafb;
+            font-size: 1rem;
+        }
+       
+        .header-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-left: 20px;
+        }
 
-      const analysisResults = document.getElementById('analysis-results');
-      
-      if (result.success) {
-        const analysis = result.data;
-        analysisResults.innerHTML = `
-          <div class="analysis-item">
-            <h4>📊 Your Stress Analysis</h4>
-            <p><strong>Average Stress Level:</strong> ${analysis.averageStress.toFixed(1)}/10</p>
-            <p><strong>Recent Trend:</strong> ${analysis.recentTrend}</p>
-            <p><strong>Total Entries:</strong> ${analysis.totalEntries}</p>
-            <p><strong>Insights:</strong></p>
-            <ul>
-              ${analysis.insights.map(insight => `<li>${insight}</li>`).join('')}
-            </ul>
-          </div>
-        `;
-      } else {
-        analysisResults.innerHTML = '<p>❌ Failed to get analysis: ' + (result.data.message || 'Unknown error') + '</p>';
-      }
-    }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+       
+        .page-section {
+            display: none;
+        }
+       
+        .page-section.active {
+            display: block;
+        }
 
-    // Initialize
-    document.addEventListener('DOMContentLoaded', function() {
-      updateStressValue(); // Set initial stress value
-    });
-  </script>
+        .welcome-section {
+            text-align: center;
+            padding: 20px;
+        }
 
+        .welcome-title {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .welcome-subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+        }
+
+        .quote-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .quote-card {
+            background: #1f2937;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: 1px solid #374151;
+        }
+
+        .quote-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-color: #4f46e5;
+        }
+
+        .quote-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #d1d5db;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .quote-author {
+            color: #a5b4fc;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+
+        .auth-wrapper {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+       
+        .auth-wrapper.active {
+            display: flex;
+        }
+
+        .auth-section {
+            background: #374151;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 450px;
+            margin: 20px;
+        }
+       
+        .auth-section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #d1d5db;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: #1f2937;
+            border: 2px solid #4b5563;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            color: #f9fafb;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 5px;
+            font-size: 2rem;
+            margin-top: 10px;
+        }
+
+        .star {
+            cursor: pointer;
+            color: #4b5563;
+            transition: color 0.2s;
+        }
+
+        .star:hover, .star.selected {
+            color: #fbbf24;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #4338ca;
+        }
+
+        .btn:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #9ca3af;
+        }
+       
+        .auth-link a {
+            color: #a5b4fc;
+            text-decoration: none;
+            font-weight: 600;
+        }
+       
+        .auth-link a:hover {
+            text-decoration: underline;
+        }
+
+        .main-footer {
+            background: #1f2937;
+            color: #9ca3af;
+            padding: 30px 20px;
+            text-align: center;
+            border-top: 1px solid #374151;
+        }
+
+        .social-links {
+            margin-top: 10px;
+        }
+
+        .social-links a {
+            color: #d1d5db;
+            margin: 0 10px;
+            font-size: 1.2rem;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #a5b4fc;
+        }
+
+        #feedback-success {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #374151;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast--success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast--error {
+            border-left: 4px solid #ef4444;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                overflow: auto;
+            }
+            .main-content {
+                height: auto;
+            }
+            .sidebar {
+                width: 100%;
+                left: -100%;
+            }
+            .main-content.sidebar-open {
+                margin-left: 0;
+            }
+            .welcome-title {
+                font-size: 2rem;
+            }
+            .search-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="toast-container" class="toast-container"></div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>PeacePulse</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" onclick="showSection('home', event)">Home</a>
+            <a href="#" class="nav-item" onclick="showSection('journals', event)">Dashboard</a>
+            <a href="#" class="nav-item" onclick="showSection('journals', event)">Journals</a>
+            <a href="#" class="nav-item" onclick="showSection('settings', event)">Settings</a>
+            <a href="#" class="nav-item" onclick="showSection('community', event)">Community</a>
+            <a href="#" class="nav-item" onclick="showSection('signup', event)">Signup</a>
+            <a href="#" class="nav-item" onclick="showSection('login', event)">Login</a>
+            <a href="#" class="nav-item" onclick="showSection('feedback', event)">Feedback</a>
+            <a href="#" class="nav-item" onclick="showSection('contact', event)">Contact</a>
+        </nav>
+        <div class="sidebar-footer">
+            <p>&copy; 2025 PeacePulse</p>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="content-wrap">
+            <div class="header">
+                <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+                <div class="search-container">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                        <path d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"></path>
+                    </svg>
+                    <input type="text" class="search-input" placeholder="Search here...">
+                </div>
+                <h1 class="header-title" id="headerTitle">Home</h1>
+            </div>
+
+            <div class="container">
+                <div id="home" class="page-section active">
+                    <div class="welcome-section">
+                        <h1 class="welcome-title">Welcome to PeacePulse</h1>
+                        <p class="welcome-subtitle">Your AI-powered stress tracking & prediction dashboard</p>
+                    </div>
+                    <div class="quote-cards">
+                        <div class="quote-card">
+                            <p class="quote-text">"Health is not just the absence of disease, it's a state of complete physical, mental and social well-being."</p>
+                            <div class="quote-author">— World Health Organization</div>
+                        </div>
+                        <div class="quote-card">
+                            <p class="quote-text">"The greatest wealth is health. Take care of your body, it's the only place you have to live."</p>
+                            <div class="quote-author">— Jim Rohn</div>
+                        </div>
+                        <div class="quote-card">
+                            <p class="quote-text">"Self-care is not selfish. You cannot serve from an empty vessel."</p>
+                            <div class="quote-author">— Eleanor Brown</div>
+                        </div>
+                        <div class="quote-card">
+                            <p class="quote-text">"Your mental health is a priority. Your happiness is an essential. Your self-care is a necessity."</p>
+                            <div class="quote-author">— Unknown</div>
+                        </div>
+                        <div class="quote-card">
+                            <p class="quote-text">"The mind is everything. What you think you become."</p>
+                            <div class="quote-author">— Buddha</div>
+                        </div>
+                        <div class="quote-card">
+                            <p class="quote-text">"Almost everything will work again if you unplug it for a few minutes, including you."</p>
+                            <div class="quote-author">— Anne Lamott</div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div id="journals" class="page-section"><h1>Journals (Dashboard) will be here</h1></div>
+                <div id="settings" class="page-section"><h1>Settings page will be here</h1></div>
+                <div id="community" class="page-section"><h1>Community page will be here</h1></div>
+                <div id="contact" class="page-section"><h1>Contact page will be here</h1></div>
+                
+                <div id="feedback" class="page-section">
+                    <div id="feedback-container">
+                        <h2>We Value Your Feedback</h2>
+                        <form id="feedbackForm">
+                            <div class="form-group">
+                                <label for="feedback-title">Title</label>
+                                <input type="text" id="feedback-title" placeholder="Enter title" required>
+                            </div>
+           
+                            <div class="form-group">
+                                <label for="feedback-category">Category</label>
+                                <select id="feedback-category" required>
+                                    <option value="" disabled selected>Select a category</option>
+                                    <option value="UI/UX">UI/UX</option>
+                                    <option value="Performance">Performance</option>
+                                    <option value="Features">New Feature Suggestion</option>
+                                    <option value="Bug Report">Bug Report</option>
+                                    <option value="General">General</option>
+                                </select>
+                            </div>
+           
+                            <div class="form-group">
+                                <label>Rating</label>
+                                <div class="star-rating">
+                                    <span class="star" data-value="5" onclick="setRating(5)">★</span>
+                                    <span class="star" data-value="4" onclick="setRating(4)">★</span>
+                                    <span class="star" data-value="3" onclick="setRating(3)">★</span>
+                                    <span class="star" data-value="2" onclick="setRating(2)">★</span>
+                                    <span class="star" data-value="1" onclick="setRating(1)">★</span>
+                                </div>
+                                <input type="hidden" id="feedback-rating" required>
+                            </div>
+           
+                            <div class="form-group">
+                                <label for="feedback-message">Message</label>
+                                <textarea id="feedback-message" rows="4" placeholder="Enter your feedback" required></textarea>
+                            </div>
+                           
+                            <button type="button" class="btn" onclick="submitFeedback(this)">Submit Feedback</button>
+                        </form>
+                    </div>
+                   
+                    <div id="feedback-success">
+                        <h2>✅ Thank You!</h2>
+                        <p>Your feedback has been submitted successfully. We appreciate you taking the time to help us improve.</p>
+                    </div>
+                </div>
+
+                <div id="signup" class="page-section auth-wrapper">
+                    <div class="auth-section">
+                        <h2>Create Your Account</h2>
+                        <form id="signupForm">
+                            <div class="form-group">
+                                <label for="signup-username">Username</label>
+                                <input type="text" id="signup-username" placeholder="Choose a username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-email">Email</label>
+                                <input type="email" id="signup-email" placeholder="you@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="signup-password">Password</label>
+                                <input type="password" id="signup-password" placeholder="Create a strong password" required>
+                            </div>
+                            <button type="button" class="btn" onclick="registerUser(this)">Sign Up</button>
+                            <p class="auth-link">
+                                Already have an account? <a href="#" onclick="showSection('login', event)">Login here</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="login" class="page-section auth-wrapper">
+                    <div class="auth-section">
+                        <h2>Login to Your Account</h2>
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="login-email">Email</label>
+                                <input type="email" id="login-email" value="test@example.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" value="password123" required>
+                            </div>
+                            <button type="button" class="btn" onclick="loginUser(this)">Login</button>
+                            <p class="auth-link">
+                                Don't have an account? <a href="#" onclick="showSection('signup', event)">Sign up here</a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="main-footer">
+            <p>&copy; 2025 PeacePulse. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" title="Twitter">X</a>
+                <a href="#" title="Instagram">Instagram</a>
+                <a href="#" title="Facebook">Facebook</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:5000/api';
+        let authToken = null;
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('mainContent').classList.toggle('sidebar-open');
+        }
+
+        function showSection(sectionId, event) {
+            if (['journals', 'settings', 'community', 'feedback'].includes(sectionId) && !authToken) {
+                showToast('Please login to access this page.', 'error');
+                const loginNavItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes('login'));
+                showSection('login', { currentTarget: loginNavItem });
+                return;
+            }
+
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+           
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            } else {
+                showToast(sectionId.charAt(0).toUpperCase() + sectionId.slice(1) + ' page is coming soon!', 'error');
+                const homeNavItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes('home'));
+                showSection('home', { currentTarget: homeNavItem });
+                return;
+            }
+           
+            document.getElementById('headerTitle').textContent = sectionId.charAt(0).toUpperCase() + sectionId.slice(1);
+
+            if (event && event.currentTarget) {
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            }
+           
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast--${type}`;
+            toast.textContent = (type === 'success' ? '✅ ' : '❌ ') + message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        function setRating(rating) {
+            const stars = document.querySelectorAll('.star-rating .star');
+            const ratingInput = document.getElementById('feedback-rating');
+            ratingInput.value = rating;
+            stars.forEach(star => {
+                star.classList.remove('selected');
+                if (parseInt(star.dataset.value) <= rating) {
+                    star.classList.add('selected');
+                }
+            });
+        }
+
+        async function makeRequest(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    headers: { 'Content-Type': 'application/json', ...options.headers },
+                    ...options
+                });
+                const data = await response.json();
+                if (!response.ok) {
+                    return { success: false, data: { message: data.message || 'An unknown error occurred.' } };
+                }
+                return { success: true, data };
+            } catch (error) {
+                console.error('API Request Failed:', error);
+                return { success: false, data: { message: 'Cannot connect to the server.' } };
+            }
+        }
+
+        async function registerUser(button) {
+            button.disabled = true;
+            try {
+                const username = document.getElementById('signup-username').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+                const result = await makeRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, email, password })
+                });
+                if (result.success) {
+                    showToast('Registration successful! Please log in.', 'success');
+                    const loginNavItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes('login'));
+                    showSection('login', { currentTarget: loginNavItem });
+                } else {
+                    showToast(`Registration failed: ${result.data.message}`, 'error');
+                }
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        async function loginUser(button) {
+            button.disabled = true;
+            try {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                const result = await makeRequest('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                if (result.success && result.data.token) {
+                    authToken = result.data.token;
+                    showToast('Login successful!', 'success');
+                    const journalsNavItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes('journals'));
+                    showSection('journals', { currentTarget: journalsNavItem });
+                } else {
+                    showToast(`Login failed: ${result.data.message}`, 'error');
+                }
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        function logout() {
+            authToken = null;
+            showToast('You have been logged out.');
+            const homeNavItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes('home'));
+            showSection('home', { currentTarget: homeNavItem });
+        }
+
+        async function submitFeedback(button) {
+            button.disabled = true;
+            try {
+                const title = document.getElementById('feedback-title').value;
+                const category = document.getElementById('feedback-category').value;
+                const rating = document.getElementById('feedback-rating').value;
+                const message = document.getElementById('feedback-message').value;
+
+                if (!title || !category || !rating || !message) {
+                    showToast('Please fill in all fields.', 'error');
+                    return;
+                }
+                const result = await makeRequest('/feedback', {
+                    method: 'POST',
+                    headers: { ...(authToken && { 'Authorization': `Bearer ${authToken}` }) },
+                    body: JSON.stringify({ title, category, rating, message })
+                });
+                if (result.success) {
+                    document.getElementById('feedback-container').style.display = 'none';
+                    document.getElementById('feedback-success').style.display = 'block';
+                } else {
+                    showToast(`Submission failed: ${result.data.message}`, 'error');
+                }
+            } finally {
+                button.disabled = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const homeNavItem = Array.from(document.querySelectorAll('.nav-item')).find(el => el.getAttribute('onclick').includes('home'));
+            if (homeNavItem) {
+                showSection('home', { currentTarget: homeNavItem });
+            }
+        });
+    </script>
 </body>
 </html>
