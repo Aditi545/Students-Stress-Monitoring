@@ -3,6 +3,7 @@ const Stress = require('../models/stressModel');
 // @desc    Create a new stress entry
 // @route   POST /api/stress
 const createStressEntry = async (req, res) => {
+  console.log('Create stress entry called with:', req.body);
   const { stressLevel, symptoms, notes } = req.body;
 
   try {

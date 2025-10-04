@@ -175,6 +175,125 @@
       font-size: 12px;
       margin-top: 50px;
     }
+
+    /* Auth Section Styles */
+    .auth-section {
+      max-width: 400px;
+      margin: 20px auto;
+      padding: 20px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+
+    .auth-form h3 {
+      color: var(--accent);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .auth-form input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      background: #1a1f2e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+    }
+
+    .auth-form button {
+      width: 100%;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+
+    .auth-form a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Dashboard Styles */
+    .stress-form, .recent-entries, .analysis-section {
+      background: var(--card);
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin: 15px 0;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .form-group input[type="range"] {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      background: #1a1f2e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      color: white;
+      resize: vertical;
+    }
+
+    .stress-form button, .recent-entries button, .analysis-section button {
+      background: linear-gradient(to right, #7c5cff, #6dd3c1);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 10px 5px;
+    }
+
+    .logout-btn {
+      background: linear-gradient(to right, #ff6b6b, #ee5a52) !important;
+    }
+
+    #entries-list, #analysis-results {
+      margin-top: 15px;
+      padding: 15px;
+      background: #1a1f2e;
+      border-radius: 8px;
+      min-height: 50px;
+    }
+
+    .entry-item {
+      background: #0b1220;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border-left: 3px solid var(--accent);
+    }
+
+    .analysis-item {
+      background: #0b1220;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+    }
   </style>
 </head>
 
@@ -230,8 +349,276 @@
   <main>
     <h1>Hello, Juhi — Welcome to PeacePulse</h1>
     <p class="muted">Your AI-powered stress tracking & prediction dashboard</p>
-    <footer>This is a frontend demo. For real predictions integrate ML & biometric signals.</footer>
+    
+    <!-- Login/Register Section -->
+    <div id="auth-section" class="auth-section">
+      <div class="auth-form">
+        <h3>Login to Your Account</h3>
+        <input type="email" id="login-email" placeholder="Email" value="test@example.com">
+        <input type="password" id="login-password" placeholder="Password" value="password123">
+        <button onclick="loginUser()">Login</button>
+        <p>Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+      </div>
+      
+      <div class="auth-form" id="register-form" style="display: none;">
+        <h3>Create New Account</h3>
+        <input type="text" id="reg-username" placeholder="Username" value="testuser">
+        <input type="email" id="reg-email" placeholder="Email" value="test@example.com">
+        <input type="password" id="reg-password" placeholder="Password" value="password123">
+        <button onclick="registerUser()">Register</button>
+        <p>Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+      </div>
+    </div>
+
+    <!-- Dashboard Section (Hidden until login) -->
+    <div id="dashboard" style="display: none;">
+      <!-- Stress Entry Form -->
+      <div class="stress-form">
+        <h3>📊 Log Your Stress Level</h3>
+        <div class="form-group">
+          <label>Stress Level (0-10):</label>
+          <input type="range" id="stress-level" min="0" max="10" value="5" oninput="updateStressValue()">
+          <span id="stress-value">5</span>
+        </div>
+        <div class="form-group">
+          <label>Symptoms (comma separated):</label>
+          <input type="text" id="symptoms" placeholder="headache, fatigue, anxiety" value="headache, fatigue">
+        </div>
+        <div class="form-group">
+          <label>Notes:</label>
+          <textarea id="notes" placeholder="How are you feeling today?" rows="3">Feeling overwhelmed with work</textarea>
+        </div>
+        <button onclick="submitStressEntry()">📝 Log Stress Entry</button>
+      </div>
+
+      <!-- Recent Entries -->
+      <div class="recent-entries">
+        <h3>📈 Your Recent Entries</h3>
+        <button onclick="loadStressEntries()">🔄 Refresh Data</button>
+        <div id="entries-list"></div>
+      </div>
+
+      <!-- Analysis -->
+      <div class="analysis-section">
+        <h3>🧠 AI Analysis</h3>
+        <button onclick="getAnalysis()">🔍 Get Insights</button>
+        <div id="analysis-results"></div>
+      </div>
+
+      <!-- Logout -->
+      <div class="logout-section">
+        <button onclick="logout()" class="logout-btn">🚪 Logout</button>
+      </div>
+    </div>
+
+    <footer>Connected to your backend API! Real-time stress monitoring.</footer>
   </main>
+
+  <script>
+    const API_BASE = 'http://localhost:5000';
+    let authToken = '';
+
+    // API Helper Functions
+    async function makeRequest(url, options = {}) {
+      try {
+        console.log('Making request to:', url, options);
+        const response = await fetch(url, {
+          headers: {
+            ...options.headers
+          },
+          ...options
+        });
+        
+        let data;
+        const responseText = await response.text();
+        
+        try {
+          data = JSON.parse(responseText);
+        } catch (jsonError) {
+          data = { error: 'Invalid JSON response', raw: responseText };
+        }
+        
+        console.log('Response:', response.status, data);
+        return { success: response.ok, data, status: response.status };
+      } catch (error) {
+        console.error('Request failed:', error);
+        return { success: false, data: { error: error.message }, status: 0 };
+      }
+    }
+
+    // Auth Functions
+    async function loginUser() {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      const result = await makeRequest(`${API_BASE}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      if (result.success && result.data.token) {
+        authToken = result.data.token;
+        showDashboard();
+        alert('✅ Login successful!');
+      } else {
+        alert('❌ Login failed: ' + (result.data.message || 'Unknown error'));
+      }
+    }
+
+    async function registerUser() {
+      const username = document.getElementById('reg-username').value;
+      const email = document.getElementById('reg-email').value;
+      const password = document.getElementById('reg-password').value;
+      
+      if (!username || !email || !password) {
+        alert('❌ Please fill in all fields');
+        return;
+      }
+      
+      const result = await makeRequest(`${API_BASE}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+      
+      if (result.success) {
+        alert('✅ Registration successful! Please login.');
+        showLogin();
+      } else {
+        const errorMsg = result.data?.message || result.data?.error || 'Unknown error';
+        console.error('Registration error:', result);
+        alert('❌ Registration failed: ' + errorMsg);
+      }
+    }
+
+    function showRegister() {
+      document.querySelector('.auth-form').style.display = 'none';
+      document.getElementById('register-form').style.display = 'block';
+    }
+
+    function showLogin() {
+      document.querySelector('.auth-form').style.display = 'block';
+      document.getElementById('register-form').style.display = 'none';
+    }
+
+    function showDashboard() {
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadStressEntries(); // Load existing data
+    }
+
+    function logout() {
+      authToken = '';
+      document.getElementById('auth-section').style.display = 'block';
+      document.getElementById('dashboard').style.display = 'none';
+      document.getElementById('entries-list').innerHTML = '';
+      document.getElementById('analysis-results').innerHTML = '';
+    }
+
+    // Stress Entry Functions
+    function updateStressValue() {
+      const slider = document.getElementById('stress-level');
+      const value = document.getElementById('stress-value');
+      value.textContent = slider.value;
+    }
+
+    async function submitStressEntry() {
+      if (!authToken) {
+        alert('❌ Please login first!');
+        return;
+      }
+
+      const stressLevel = parseInt(document.getElementById('stress-level').value);
+      const symptoms = document.getElementById('symptoms').value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      const notes = document.getElementById('notes').value;
+
+      console.log('Submitting stress entry:', { stressLevel, symptoms, notes });
+
+      const result = await makeRequest(`${API_BASE}/api/stress`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${authToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ stressLevel, symptoms, notes })
+      });
+
+      if (result.success) {
+        alert('✅ Stress entry logged successfully!');
+        loadStressEntries(); // Refresh the list
+        // Clear form
+        document.getElementById('stress-level').value = 5;
+        document.getElementById('stress-value').textContent = '5';
+        document.getElementById('symptoms').value = '';
+        document.getElementById('notes').value = '';
+      } else {
+        alert('❌ Failed to log entry: ' + (result.data.message || 'Unknown error'));
+      }
+    }
+
+    async function loadStressEntries() {
+      if (!authToken) {
+        document.getElementById('entries-list').innerHTML = '<p>Please login to view entries.</p>';
+        return;
+      }
+
+      const result = await makeRequest(`${API_BASE}/api/stress`, {
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
+
+      const entriesList = document.getElementById('entries-list');
+      
+      if (result.success && result.data.length > 0) {
+        entriesList.innerHTML = result.data.map(entry => `
+          <div class="entry-item">
+            <strong>Stress Level: ${entry.stressLevel}/10</strong><br>
+            <small>Date: ${new Date(entry.createdAt).toLocaleDateString()}</small><br>
+            <small>Symptoms: ${entry.symptoms.join(', ')}</small><br>
+            <small>Notes: ${entry.notes || 'No notes'}</small>
+          </div>
+        `).join('');
+      } else {
+        entriesList.innerHTML = '<p>No stress entries found. Log your first entry above!</p>';
+      }
+    }
+
+    async function getAnalysis() {
+      if (!authToken) {
+        alert('❌ Please login first!');
+        return;
+      }
+
+      const result = await makeRequest(`${API_BASE}/api/analysis`, {
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
+
+      const analysisResults = document.getElementById('analysis-results');
+      
+      if (result.success) {
+        const analysis = result.data;
+        analysisResults.innerHTML = `
+          <div class="analysis-item">
+            <h4>📊 Your Stress Analysis</h4>
+            <p><strong>Average Stress Level:</strong> ${analysis.averageStress.toFixed(1)}/10</p>
+            <p><strong>Recent Trend:</strong> ${analysis.recentTrend}</p>
+            <p><strong>Total Entries:</strong> ${analysis.totalEntries}</p>
+            <p><strong>Insights:</strong></p>
+            <ul>
+              ${analysis.insights.map(insight => `<li>${insight}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      } else {
+        analysisResults.innerHTML = '<p>❌ Failed to get analysis: ' + (result.data.message || 'Unknown error') + '</p>';
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      updateStressValue(); // Set initial stress value
+    });
+  </script>
 
 </body>
 </html>

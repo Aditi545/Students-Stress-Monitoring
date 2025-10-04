@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 // @desc    Register a new user
 // @route   POST /api/auth/register
 exports.registerUser = async (req, res) => {
+  console.log('Register user called with:', req.body);
   const { username, email, password } = req.body;
 
   try {
@@ -26,8 +27,8 @@ exports.registerUser = async (req, res) => {
     res.status(201).json({ message: 'User registered successfully' });
 
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error('Registration error:', err);
+    res.status(500).json({ message: 'Server Error', error: err.message });
   }
 };
 

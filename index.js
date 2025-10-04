@@ -15,13 +15,26 @@ mongoose.connect(process.env.MONGO_URI)
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: true
+}));
 app.use(express.json());
+
+// Debug middleware
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path} - ${new Date().toISOString()}`);
+  console.log('Headers:', req.headers);
+  console.log('Body:', req.body);
+  next();
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/stress', stressRoutes);
 app.use('/api/analysis', analysisRoutes);
+
+console.log('✅ Analysis routes registered');
 
 
 app.get('/', (req, res) => {

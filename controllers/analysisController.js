@@ -4,8 +4,10 @@ const Stress = require('../models/stressModel');
 // @route   GET /api/analysis
 const getAnalysis = async (req, res) => {
   try {
+    console.log('Analysis controller called for user:', req.user.id);
     // 1. Fetch all stress entries for the logged-in user
     const entries = await Stress.find({ user: req.user.id }).sort({ createdAt: 'asc' });
+    console.log('Found entries:', entries.length);
 
     if (entries.length < 3) {
       return res.json({
@@ -38,11 +40,21 @@ const getAnalysis = async (req, res) => {
 
     // You can add more rules here based on your dataset analysis (e.g., specific symptoms)
 
-    // 4. Send the Response
+    // 4. Determine recent trend
+    let recentTrend;
+    if (recentAverageStress > averageStress + 1) {
+      recentTrend = "📈 Increasing";
+    } else if (recentAverageStress < averageStress - 1) {
+      recentTrend = "📉 Decreasing";
+    } else {
+      recentTrend = "➡️ Stable";
+    }
+
+    // 5. Send the Response
     res.json({
       totalEntries,
-      averageStress: averageStress.toFixed(2),
-      recentAverageStress: recentAverageStress.toFixed(2),
+      averageStress: parseFloat(averageStress.toFixed(1)),
+      recentTrend,
       insights
     });
 
