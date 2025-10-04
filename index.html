@@ -3,243 +3,235 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Stress Analysis & Prediction</title>
+  <title>PeacePulse — Stress Analysis & Prediction</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <style>
-    :root{
-      --bg:#0f1724; /* deep navy */
-      --card:#0b1220;
-      --muted:#9aa5b1;
-      --accent:#6dd3c1; /* teal */
-      --accent-2:#7c5cff; /* purple */
-      --glass: rgba(255,255,255,0.04);
-      --radius:14px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --muted: #9aa5b1;
+      --accent: #6dd3c1;
+      --accent-2: #7c5cff;
+      --radius: 14px;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
+
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body {
+      margin: 0;
       background: linear-gradient(180deg, #071026 0%, var(--bg) 60%);
-      color:#e6eef6;
-      -webkit-font-smoothing:antialiased;
-      padding:28px;
-      display:flex;
-      align-items:flex-start;
-      justify-content:center;
+      color: #e6eef6;
+      overflow-x: hidden;
     }
 
-    /*.container{
-      width:100%;
-      max-width:1100px;
-      display:grid;
-      grid-template-columns: 320px 1fr;
-      gap:20px;
-    } */
-
-    /* SIDEBAR */
-    .sidebar{
-      background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-      border-radius:var(--radius);
-      padding:20px;
-      box-shadow: 0 6px 18px rgba(2,6,23,0.6);
-      min-height:600px;
-    }
-    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
-    .logo{
-      width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent), var(--accent-2));
-      display:flex;align-items:center;justify-content:center;font-weight:700;color:#042024;font-size:20px
-    }
-    h1{font-size:18px;margin:0}
-    p.lead{color:var(--muted);font-size:13px;margin:6px 0 18px}
-
-    .nav{display:flex;flex-direction:column;gap:8px}
-    .nav button{
-      background:transparent;border:0;color:var(--muted);text-align:left;padding:10px;border-radius:10px;cursor:pointer;font-size:14px
-    }
-    .nav button.active{background:var(--glass);color:#fff}
-
-    .profile{margin-top:20px;border-radius:12px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);display:flex;gap:12px;align-items:center}
-    .avatar{width:56px;height:56px;border-radius:10px;background:#092032;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--accent);font-size:20px}
-    .muted{color:var(--muted);font-size:13px}
-
-    /* MAIN */
-    .main{
-      min-height:600px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
-      border-radius:var(--radius);
-      padding:20px;
-      box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-      overflow:hidden;
+    /* Sticky Navbar */
+    nav {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      background: #0d1117;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+      z-index: 900;
     }
 
-    .header-main{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-    .search{display:flex;gap:10px;align-items:center}
-    .search input{background:transparent;border:1px solid rgba(255,255,255,0.04);padding:10px 12px;border-radius:10px;color:inherit;width:240px}
-    .cta{display:flex;gap:10px}
-    .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));border:0;padding:10px 14px;border-radius:10px;color:#042024;font-weight:600;cursor:pointer}
-    .outline{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px 12px;border-radius:10px;color:var(--muted);cursor:pointer}
-
-    /* DASHBOARD GRID */
-    .grid{display:grid;grid-template-columns: repeat(3,1fr);gap:16px;margin-top:6px}
-    .card{background:var(--card);padding:16px;border-radius:12px;min-height:110px}
-    .card h3{margin:0;font-size:14px}
-    .big{grid-column: span 2;display:flex;flex-direction:column;gap:12px}
-
-    /* Stress meter */
-    .stress-meter{display:flex;align-items:center;gap:12px}
-    .meter{height:12px;background:rgba(255,255,255,0.04);border-radius:999px;flex:1;overflow:hidden}
-    .meter > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:30%;transition:width 600ms ease}
-    .score{font-weight:700;font-size:22px}
-
-    /* Journal */
-    textarea{width:100%;min-height:120px;background:transparent;border:1px dashed rgba(255,255,255,0.04);padding:12px;border-radius:10px;color:inherit}
-    .row{display:flex;gap:12px}
-
-    /* suggestions */
-    .suggestions{display:flex;flex-direction:column;gap:8px}
-    .chip{background:linear-gradient(180deg, rgba(255,255,255,0.015), transparent);padding:10px;border-radius:10px;font-size:13px}
-
-    footer.small{color:var(--muted);font-size:12px;margin-top:12px}
-
-    /* Responsive */
-    @media (max-width:980px){
-      .container{grid-template-columns:1fr;}
-      .grid{grid-template-columns:1fr}
-      .big{grid-column:unset}
+    nav form {
+      display: flex;
+      gap: 10px;
+      width: 50%;
+      justify-content: center;
     }
 
+    nav input {
+      flex: 1;
+      background: #1a1f2e;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      padding: 10px 12px;
+    }
+
+    nav button {
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    nav button:hover { opacity: 0.9; }
+
+    /* Sidebar */
+    .main_box {
+      display: flex;
+    }
+
+    .btn_one label {
+      position: fixed;
+      top: 20px;
+      left: 25px;
+      font-size: 24px;
+      color: white;
+      cursor: pointer;
+      z-index: 1100;
+    }
+
+    #check { display: none; }
+
+    .sidebar_menu {
+      position: fixed;
+      top: 0; left: -280px;
+      width: 250px; height: 100%;
+      background: #0b1220;
+      padding: 20px;
+      transition: all 0.4s ease;
+      box-shadow: 3px 0 10px rgba(0,0,0,0.5);
+      z-index: 1100;
+    }
+
+    #check:checked ~ .sidebar_menu {
+      left: 0;
+    }
+
+    .sidebar_menu .logo a {
+      color: var(--accent);
+      font-size: 22px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .btn_two label {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 22px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .menu ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 50px;
+    }
+
+    .menu ul li {
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu ul li a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    .menu ul li a:hover {
+      color: var(--accent);
+    }
+
+    .social_media {
+      position: absolute;
+      bottom: 30px;
+      left: 20px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .social_media a {
+      color: var(--muted);
+      font-size: 18px;
+      transition: 0.3s;
+    }
+
+    .social_media a:hover { color: var(--accent); }
+
+    /* Main Content */
+    main {
+      margin-top: 100px;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 10px;
+    }
+
+    .muted { color: var(--muted); }
+
+    footer {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 50px;
+    }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="logo">SA</div>
-        <div>
-          <h1>Stress Analysis</h1>
-          <p class="lead">Predict & manage stress — demo UI</p>
-        </div>
+
+  <!-- Sidebar Toggle Checkbox -->
+  <div class="main_box">
+    <input type="checkbox" id="check" />
+    <div class="btn_one">
+      <label for="check"><i class="fa-solid fa-bars"></i></label>
+    </div>
+
+    <div class="sidebar_menu">
+      <div class="logo">
+        <a href="#">PeacePulse</a>
       </div>
 
-      <nav class="nav" aria-label="Main navigation">
-        <button class="active">Dashboard</button>
-        <button>Journal</button>
-        <button>Trends</button>
-        <button>Community</button>
-        <button>Settings</button>
-      </nav>
-
-      <div class="profile">
-        <div class="avatar">J</div>
-        <div>
-          <div style="font-weight:700">Juhiii</div>
-          <div class="muted">Member since 2025</div>
-        </div>
+      <div class="btn_two">
+        <label for="check"><i class="fa-solid fa-xmark"></i></label>
       </div>
 
-      <div style="margin-top:18px">
-        <div class="muted">Quick tools</div>
-        <div style="display:flex;gap:8px;margin-top:8px">
-          <button class="outline">Export</button>
-          <button class="outline">Connect</button>
-        </div>
+      <div class="menu">
+        <ul>
+          <li><i class="fa-solid fa-house"></i><a href="#">Home</a></li>
+          <li><i class="fa-solid fa-book"></i><a href="#">Journals</a></li>
+          <li><i class="fa-solid fa-gear"></i><a href="#">Settings</a></li>
+          <li><i class="fa-solid fa-users"></i><a href="#">Community</a></li>
+          <li><i class="fa-solid fa-user-plus"></i><a href="#">Signup</a></li>
+          <li><i class="fa-solid fa-phone"></i><a href="#">Contact</a></li>
+          <li><i class="fa-regular fa-comments"></i><a href="#">Feedback</a></li>
+          <li><i class="fa-solid fa-right-to-bracket"></i><a href="#">Login</a></li>
+        </ul>
       </div>
 
-      <div style="margin-top:18px">
-        <div class="muted">Tips</div>
-        <div class="chip" style="margin-top:8px">Take 3 deep breaths when score goes above 70</div>
+      <div class="social_media">
+        <a href="#"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-youtube"></i></a>
       </div>
-
-    </aside>
-
-    <main class="main" role="main">
-      <div class="header-main">
-        <div>
-          <h2 style="margin:0">Hello, Juhiii — here's your dashboard</h2>
-          <div class="muted">Overview of today's stress & suggestions</div>
-        </div>
-
-        <div class="search">
-          <input id="search" placeholder="Search... try 'sleep' or 'work'" />
-          <button class="btn" id="analyzeBtn">Analyze Journal</button>
-          <button class="outline" id="resetBtn">Reset</button>
-        </div>
-      </div>
-
-      <section class="grid">
-        <div class="card">
-          <h3>Today's Stress Score</h3>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
-            <div>
-              <div class="score" id="scoreVal">30</div>
-              <div class="muted">Lower is better</div>
-            </div>
-            <div style="width:160px">
-              <div class="meter" aria-hidden="true"><i id="meterFill" style="width:30%"></i></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Predicted Stress (next 24h)</h3>
-          <div class="muted" style="margin-top:10px">Based on recent entries & patterns</div>
-          <div style="margin-top:12px"><strong id="predText">Low</strong></div>
-        </div>
-
-        <div class="card">
-          <h3>Quick Actions</h3>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
-            <button class="btn" onclick="startBreathing()">2-min Breathing</button>
-            <button class="outline" onclick="openSuggestion()">Get Coping Tips</button>
-          </div>
-        </div>
-
-        <div class="card big">
-          <div style="display:flex;justify-content:space-between;align-items:start">
-            <div>
-              <h3>Journal</h3>
-              <div class="muted">Write how you're feeling. Press Analyze to get a score & suggestions.</div>
-            </div>
-            <div class="muted">Entries saved locally</div>
-          </div>
-
-          <textarea id="journal" placeholder="I felt anxious today because..."></textarea>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
-            <div class="muted">Mood:</div>
-            <div style="display:flex;gap:8px">
-              <button class="outline moodBtn" data-val="happy">😊</button>
-              <button class="outline moodBtn" data-val="neutral">😐</button>
-              <button class="outline moodBtn" data-val="sad">😟</button>
-            </div>
-          </div>
-
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <button class="btn" id="saveBtn">Save Entry</button>
-            <button class="outline" id="viewEntries">View Entries</button>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Suggestions</h3>
-          <div class="suggestions" id="suggestions">
-            <div class="chip">Short walk (10 min)</div>
-            <div class="chip">5-minute breathing</div>
-            <div class="chip">Avoid caffeine after 4 PM</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Trends</h3>
-          <div class="muted">Last 7 days</div>
-          <div style="margin-top:12px">(Demo sparkline)</div>
-        </div>
-
-      </section>
-
-      <footer class="small">This is a frontend demo. For real predictions integrate ML & biometric signals.</footer>
-    </main>
+    </div>
   </div>
 
+  <!-- Sticky Search Navbar -->
+  <nav>
+    <form role="search">
+      <input type="search" placeholder="Search here..." aria-label="Search" />
+      <button type="submit">Search</button>
+    </form>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <h1>Hello, Juhi — Welcome to PeacePulse</h1>
+    <p class="muted">Your AI-powered stress tracking & prediction dashboard</p>
+    <footer>This is a frontend demo. For real predictions integrate ML & biometric signals.</footer>
+  </main>
 
 </body>
 </html>
