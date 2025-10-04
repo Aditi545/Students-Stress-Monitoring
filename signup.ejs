@@ -1,0 +1,20 @@
+<%- include('partials/header.ejs') %>
+
+<div class="container">
+    <h2>Create Your Account</h2>
+    <form action="/signup" method="POST">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit" class="form-button">Sign Up</button>
+    </form>
+    <p class="link-text">Already have an account? <a href="/login">Log In</a></p>
+</div>
+
+<%- include('partials/footer.ejs') %>
